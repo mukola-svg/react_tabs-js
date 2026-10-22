@@ -1,8 +1,5 @@
-import { useState } from 'react';
-
-export const Tabs = ({ tabs }) => {
-  const [id, setId] = useState('');
-  const tex = tabs.find(e => e.id === id);
+export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
+  const activeTab = tabs.find(tab => tab.id === activeTabId) || tabs[0];
 
   return (
     <div data-cy="TabsComponent">
@@ -11,11 +8,18 @@ export const Tabs = ({ tabs }) => {
           {tabs.map(e => (
             <li
               key={e.id}
-              className={id === e.id ? 'is-active' : ''}
+              className={e.id === activeTab.id ? 'is-active' : ''}
               data-cy="Tab"
-              onClick={() => setId(e.id)}
             >
-              <a href={`${e.id}`} data-cy="TabLink">
+              <a
+                href={`#${e.id}`}
+                data-cy="TabLink"
+                onClick={() => {
+                  if (e.id !== activeTab.id) {
+                    onTabSelected(e.id);
+                  }
+                }}
+              >
                 {e.title}
               </a>
             </li>
@@ -23,7 +27,7 @@ export const Tabs = ({ tabs }) => {
         </ul>
       </div>
       <div className="block" data-cy="TabContent">
-        {tex?.content}
+        {activeTab?.content}
       </div>
     </div>
   );
